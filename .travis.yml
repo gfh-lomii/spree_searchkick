@@ -1,0 +1,20 @@
+language: ruby
+rvm:
+  - 2.3
+  - 2.4
+addons:
+  apt:
+    sources:
+      - elasticsearch-6.x
+    packages:
+    - elasticsearch
+services:
+  - elasticsearch
+sudo: false
+cache: bundler
+before_script:
+  - sh -e /etc/init.d/xvfb start
+  - export DISPLAY=:99.0
+  - bundle exec rake test_app
+script:
+  - bundle exec rspec spec
