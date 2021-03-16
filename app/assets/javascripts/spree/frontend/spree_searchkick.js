@@ -19,7 +19,7 @@ Spree.typeaheadSearch = function() {
   // passing in `null` for the `options` arguments will result in the default
   // options being used
   $('#keywords').typeahead({
-    minLength: 2,
+    minLength: 1,
     highlight: true
   }, {
       name: 'products',

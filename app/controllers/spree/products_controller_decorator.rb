@@ -8,7 +8,7 @@ module Spree::ProductsControllerDecorator
     params.merge(taxon: @taxon.id) if @taxon
     @searcher = build_searcher(params.merge(conversions: true))
     @products = @searcher.retrieve_products
-    
+
     render :index
   end
 

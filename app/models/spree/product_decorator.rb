@@ -1,6 +1,6 @@
 module Spree::ProductDecorator
   def self.prepended(base)
-    base.searchkick word_start: [:name], settings: { number_of_replicas: 0 } unless base.respond_to?(:searchkick_index)
+    base.searchkick text_middle: [:name], settings: { number_of_replicas: 0 } unless base.respond_to?(:searchkick_index)
 
     def base.autocomplete_fields
       [:name]
@@ -11,22 +11,26 @@ module Spree::ProductDecorator
     end
 
     def base.autocomplete(keywords)
-      if keywords
+      if keywords && keywords != '%QUERY'
+        puts 'keywords'
+        puts keywords
         Spree::Product.search(
           keywords,
           fields: autocomplete_fields,
-          match: :word_start,
+          match: :text_middle,
           limit: 10,
+          operator: 'or',
           load: false,
-          misspellings: { below: 3 },
+          misspellings: { below: 2, edit_distance: 10 },
           where: search_where,
         ).map(&:name).map(&:strip).uniq
       else
+        puts 'asASDASDASDASDASDASD'
         Spree::Product.search(
           "*",
           fields: autocomplete_fields,
           load: false,
-          misspellings: { below: 3 },
+          misspellings: { below: 2, edit_distance: 10 },
           where: search_where,
         ).map(&:name).map(&:strip)
       end
@@ -44,7 +48,7 @@ module Spree::ProductDecorator
     json = {
       name: name,
       description: description,
-      active: available?,
+      active: can_supply?,
       created_at: created_at,
       updated_at: updated_at,
       price: price,

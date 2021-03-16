@@ -9,9 +9,9 @@ Gem::Specification.new do |s|
   s.description = 'Filters, suggests, autocompletes, sortings, searches'
   s.required_ruby_version = '>= 2.5.0'
 
-  s.author    = 'Gonzalo Moreno'
-  s.email     = 'gonzalo.moreno@pm.me'
-  s.homepage  = 'https://gonzalomoreno.me'
+  s.author    = 'Lomi'
+  s.email     = 'chienfu.udp@gmail.com'
+  s.homepage  = 'https://lomi.cl'
 
   # s.files       = `git ls-files`.split("\n")
   # s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
