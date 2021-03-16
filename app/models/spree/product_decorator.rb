@@ -21,16 +21,15 @@ module Spree::ProductDecorator
           limit: 10,
           operator: 'or',
           load: false,
-          misspellings: { below: 2, edit_distance: 10 },
+          misspellings: { below: 2, edit_distance: 3 },
           where: search_where,
         ).map(&:name).map(&:strip).uniq
       else
-        puts 'asASDASDASDASDASDASD'
         Spree::Product.search(
           "*",
           fields: autocomplete_fields,
           load: false,
-          misspellings: { below: 2, edit_distance: 10 },
+          misspellings: { below: 2, edit_distance: 3 },
           where: search_where,
         ).map(&:name).map(&:strip)
       end
