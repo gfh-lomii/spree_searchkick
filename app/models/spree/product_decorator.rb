@@ -12,8 +12,6 @@ module Spree::ProductDecorator
 
     def base.autocomplete(keywords)
       if keywords && keywords != '%QUERY'
-        puts 'keywords'
-        puts keywords
         Spree::Product.search(
           keywords,
           fields: autocomplete_fields,
@@ -21,6 +19,7 @@ module Spree::ProductDecorator
           limit: 10,
           operator: 'or',
           load: false,
+          order: sorted,
           misspellings: { below: 2, edit_distance: 3 },
           where: search_where,
         ).map(&:name).map(&:strip).uniq
@@ -29,6 +28,7 @@ module Spree::ProductDecorator
           "*",
           fields: autocomplete_fields,
           load: false,
+          order: sorted,
           misspellings: { below: 2, edit_distance: 3 },
           where: search_where,
         ).map(&:name).map(&:strip)
@@ -41,18 +41,24 @@ module Spree::ProductDecorator
         price: { not: nil },
       }
     end
+
+    def base.sorted
+      order_params = {}
+      order_params[:name] = :asc
+      order_params
+    end
   end
 
   def search_data
     json = {
       name: name,
-      description: description,
       active: can_supply?,
       created_at: created_at,
       updated_at: updated_at,
       price: price,
       currency: currency,
       conversions: orders.complete.count,
+      producer: producer_id,
       taxon_ids: taxon_and_ancestors.map(&:id),
       taxon_names: taxon_and_ancestors.map(&:name),
     }

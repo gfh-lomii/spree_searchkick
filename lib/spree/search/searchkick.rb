@@ -6,6 +6,7 @@ module Spree
       end
 
       def base_elasticsearch
+        puts where_query
         curr_page = page || 1
         Spree::Product.search(
           keyword_query,
@@ -26,6 +27,7 @@ module Spree
           price: { not: nil },
         }
         where_query[:taxon_ids] = taxon.id if taxon
+        where_query[:producer] = producer if producer
         add_search_filters(where_query)
       end
 
@@ -35,7 +37,7 @@ module Spree
 
       def sorted
         order_params = {}
-        order_params[:conversions] = :desc if conversions
+        order_params[:name] = :asc
         order_params
       end
 
@@ -60,7 +62,7 @@ module Spree
 
       def prepare(params)
         super
-        @properties[:conversions] = params[:conversions]
+        @properties[:producer] = params[:producer]
       end
     end
   end
