@@ -4,9 +4,8 @@
 
 Spree.typeaheadSearch = function() {
   var products = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.whitespace,
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    limit: 10,
     prefetch: Spree.pathFor('autocomplete/products.json'),
     remote: {
       url: Spree.pathFor('autocomplete/products.json?keywords=%25QUERY'),
@@ -19,10 +18,12 @@ Spree.typeaheadSearch = function() {
   // passing in `null` for the `options` arguments will result in the default
   // options being used
   $('#keywords').typeahead({
+    hint: true,
     minLength: 1,
     highlight: true
   }, {
-      name: 'products',
-      source: products
-    });
+    name: 'products',
+    source: products,
+    limit: 10
+  });
 }
