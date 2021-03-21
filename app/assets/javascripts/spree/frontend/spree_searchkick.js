@@ -28,6 +28,7 @@ Spree.typeaheadSearch = function () {
     queryTokenizer: queryTokenizer,
     prefetch: {
       url: Spree.pathFor('autocomplete/products.json'),
+      ttl: 14400000,
       transform: function (response) {
         return formatSearchResponse(response);
       }
