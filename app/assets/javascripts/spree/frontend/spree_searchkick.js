@@ -56,3 +56,7 @@ Spree.typeaheadSearch = function () {
     source: products.ttAdapter()
   });
 };
+
+document.addEventListener("turbolinks:load", function () {
+  if (typeof Spree.typeaheadSearch !== 'undefined') Spree.typeaheadSearch();
+});
