@@ -21,9 +21,16 @@ var formatSearchResponse = function (response) {
     var normalized = normalize(transformObj(obj));
     return {
       value: normalized,
-      displayValue: obj['n']
+      displayValue: obj['n'],
+      displayObj: obj
     };
   });
+};
+
+var configImgCdn = function (img_url, width, height, quality) {
+  if ($('body').attr('data-rails-env') === 'development') return img_url;
+  var splitUrl = img_url.split('/')
+  return splitUrl[0] + '//' + splitUrl[2] + '/' + 'cdn-cgi/image/width=' + width + ',height=' + height + ',quality=' + quality + ',f=auto,fit=pad/' + splitUrl[3];
 };
 
 Spree.typeaheadSearch = function () {
@@ -53,12 +60,18 @@ Spree.typeaheadSearch = function () {
     minLength: 1,
     hint: false,
     highlight: true
-  }, {
-
+  },{
     displayKey: 'displayValue',
     limit: 20,
     name: 'products',
     source: products.ttAdapter(),
+    templates: {
+      empty: 'not found',
+      suggestion: function (el) {
+        var obj = el.displayObj
+        return '<div><img class="lazyload"  alt="  ' + obj.n + ' " data-src="' + configImgCdn(obj.i, 50, 50, 75) + '"  width="50" height="50" style="border-radius: 10px; margin-right: 10px; height: auto"/>' + obj.n + '<br>' +  obj.p + '</div>'
+      }
+    }
   });
 };
 
