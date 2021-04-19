@@ -18,7 +18,7 @@ module Spree::ProductDecorator
           operator: 'or',
           load: false,
           order: sorted,
-          misspellings: { below: 2, edit_distance: 3 },
+          misspellings: { below: 2, edit_distance: 2 },
           where: search_where,
           ).map(&:name).map(&:strip)
       else
@@ -27,7 +27,7 @@ module Spree::ProductDecorator
           fields: search_fields,
           load: false,
           order: sorted,
-          misspellings: { below: 2, edit_distance: 3 },
+          misspellings: { below: 2, edit_distance: 2 },
           where: search_where,
           ).map{|p| {
             n: p.name&.strip || '',
