@@ -2,14 +2,14 @@ module Spree::ProductDecorator
   include Spree::BaseHelper
 
   def self.prepended(base)
-    base.searchkick text_middle: [:name], settings: { number_of_replicas: 0 } unless base.respond_to?(:searchkick_index)
+    base.searchkick text_middle: [:name, :producer_name, :taxon_names, :meta_keywords], settings: { number_of_replicas: 0 } unless base.respond_to?(:searchkick_index)
 
     def base.autocomplete_fields
       [:name]
     end
 
     def base.search_fields
-      [:name]
+      [:name, :producer_name, :taxon_names, :meta_keywords]
     end
 
     def base.autocomplete(keywords)
@@ -35,7 +35,7 @@ module Spree::ProductDecorator
           where: search_where,
           ).map{|p| {
             n: p.name&.strip || '',
-            p: p.producer_name.strip || '',
+            p: p.producer_name&.strip || '',
             t: p.taxon_names.join(' '),
             k: p.meta_keywords&.strip || '',
             i: p.image_url }}

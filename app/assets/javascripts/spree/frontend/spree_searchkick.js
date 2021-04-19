@@ -3,6 +3,7 @@
 //= require_tree .
 
 var normalize = function (input) {
+  if (!input) return ''
   return input.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 };
 
@@ -11,12 +12,16 @@ var queryTokenizer = function (q) {
   return Bloodhound.tokenizers.whitespace(normalized);
 };
 
+var transformObj = function (obj) {
+  return obj['n'] + ' ' + obj['p'] + ' ' + obj['t'] + ' ' + obj['k'];
+};
+
 var formatSearchResponse = function (response) {
-  return $.map(response, function (name) {
-    var normalized = normalize(name);
+  return $.map(response, function (obj) {
+    var normalized = normalize(transformObj(obj));
     return {
       value: normalized,
-      displayValue: name
+      displayValue: obj['n']
     };
   });
 };
@@ -53,7 +58,7 @@ Spree.typeaheadSearch = function () {
     displayKey: 'displayValue',
     limit: 10,
     name: 'products',
-    source: products.ttAdapter()
+    source: products.ttAdapter(),
   });
 };
 
