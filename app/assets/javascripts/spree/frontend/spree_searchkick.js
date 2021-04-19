@@ -56,7 +56,7 @@ Spree.typeaheadSearch = function () {
   }, {
 
     displayKey: 'displayValue',
-    limit: 10,
+    limit: 20,
     name: 'products',
     source: products.ttAdapter(),
   });

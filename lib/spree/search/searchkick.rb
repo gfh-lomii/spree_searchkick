@@ -11,6 +11,7 @@ module Spree
         Spree::Product.search(
           keyword_query,
           fields: Spree::Product.search_fields,
+          match: :text_middle,
           where: where_query,
           aggs: aggregations,
           smart_aggs: true,

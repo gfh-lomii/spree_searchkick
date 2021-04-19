@@ -2,23 +2,19 @@ module Spree::ProductDecorator
   include Spree::BaseHelper
 
   def self.prepended(base)
-    base.searchkick text_middle: [:name, :producer_name, :taxon_names, :meta_keywords], settings: { number_of_replicas: 0 } unless base.respond_to?(:searchkick_index)
-
-    def base.autocomplete_fields
-      [:name]
-    end
+    base.searchkick settings: { number_of_replicas: 0 } unless base.respond_to?(:searchkick_index)
 
     def base.search_fields
-      [:name, :producer_name, :taxon_names, :meta_keywords]
+      ['name^10', 'producer_name', 'taxon_names', 'meta_keywords']
     end
 
     def base.autocomplete(keywords)
       if keywords && keywords != '%QUERY'
         Spree::Product.search(
           keywords,
-          fields: autocomplete_fields,
+          fields: search_fields,
           match: :text_middle,
-          limit: 10,
+          limit: 20,
           operator: 'or',
           load: false,
           order: sorted,
@@ -28,7 +24,7 @@ module Spree::ProductDecorator
       else
         Spree::Product.search(
           "*",
-          fields: autocomplete_fields,
+          fields: search_fields,
           load: false,
           order: sorted,
           misspellings: { below: 2, edit_distance: 3 },
