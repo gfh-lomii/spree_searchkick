@@ -53,7 +53,14 @@ Spree.typeaheadSearch = function () {
       }
     }
   });
-  products.initialize();
+
+  products.initialize().done(function () {
+    console.log('ready to go!');
+    setTimeout(function () {
+      $('#search_loader').addClass('d-none').removeClass('load');
+    }, 0);
+  });
+
   // passing in `null` for the `options` arguments will result in the default
   // options being used
   $('#keywords').typeahead({
