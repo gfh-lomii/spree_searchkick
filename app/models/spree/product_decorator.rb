@@ -2,7 +2,7 @@ module Spree::ProductDecorator
   include Spree::BaseHelper
 
   def self.prepended(base)
-    base.searchkick settings: { number_of_replicas: 0 } unless base.respond_to?(:searchkick_index)
+    base.searchkick text_middle: [:name, :producer_name, :taxon_names, :meta_keywords], settings: { number_of_replicas: 0 } unless base.respond_to?(:searchkick_index)
 
     def base.search_fields
       ['name^10', 'producer_name', 'taxon_names', 'meta_keywords']
