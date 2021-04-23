@@ -62,6 +62,7 @@ module Spree::ProductDecorator
         currency: currency,
         conversions: orders.complete.count,
         producer_name: producer&.name,
+        producer: producer&.id,
         taxon_ids: taxon_and_ancestors.map(&:id),
         taxon_names: taxon_and_ancestors.map(&:name),
         meta_keywords: meta_keywords,
