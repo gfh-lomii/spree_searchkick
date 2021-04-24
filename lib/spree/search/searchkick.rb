@@ -38,7 +38,7 @@ module Spree
 
       def sorted
         order_params = {}
-        order_params[:name] = :asc
+        order_params[:name] = :asc unless @properties[:ignore_search]
         order_params
       end
 
@@ -63,6 +63,7 @@ module Spree
 
       def prepare(params)
         super
+        @properties[:ignore_search] = params[:ignore_search]
         @properties[:producer] = params[:producer]
       end
     end

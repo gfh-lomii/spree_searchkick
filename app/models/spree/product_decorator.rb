@@ -5,7 +5,7 @@ module Spree::ProductDecorator
     base.searchkick text_middle: [:name, :producer_name, :taxon_names, :meta_keywords], settings: { number_of_replicas: 0 } unless base.respond_to?(:searchkick_index)
 
     def base.search_fields
-      ['name^10', 'producer_name', 'taxon_names', 'meta_keywords']
+      ['name^100', 'producer_name', 'taxon_names', 'meta_keywords']
     end
 
     def base.autocomplete(keywords)
@@ -14,10 +14,7 @@ module Spree::ProductDecorator
           keywords,
           fields: search_fields,
           match: :text_middle,
-          limit: 20,
-          operator: 'or',
           load: false,
-          order: sorted,
           misspellings: { below: 2, edit_distance: 2 },
           where: search_where,
           ).map(&:name).map(&:strip)
@@ -26,7 +23,6 @@ module Spree::ProductDecorator
           "*",
           fields: search_fields,
           load: false,
-          order: sorted,
           misspellings: { below: 2, edit_distance: 2 },
           where: search_where,
           ).map{|p| {
@@ -64,7 +60,7 @@ module Spree::ProductDecorator
         producer_name: producer&.name,
         producer: producer&.id,
         taxon_ids: taxon_and_ancestors.map(&:id),
-        taxon_names: taxon_and_ancestors.map(&:name),
+        taxon_names: taxon_and_ancestors.map{|taxon| taxon.name if taxon.taxonomy_id == 4 && taxon.depth != 0 && !taxon.name.include?(" y ")}.compact,
         meta_keywords: meta_keywords,
         image_url: (Rails.application.routes.url_helpers.rails_public_blob_url(default_image_for_product_or_variant(self)&.attachment) rescue '')
       }

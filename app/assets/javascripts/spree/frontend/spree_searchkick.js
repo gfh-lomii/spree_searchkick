@@ -55,7 +55,6 @@ Spree.typeaheadSearch = function () {
   });
 
   products.initialize().done(function () {
-    console.log('ready to go!');
     setTimeout(function () {
       $('#search_loader').addClass('d-none').removeClass('load');
     }, 0);
