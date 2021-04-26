@@ -52,7 +52,7 @@ module Spree::ProductDecorator
       stock_location_ids = stock_items.where('count_on_hand > 0').pluck(:stock_location_id).uniq
       json = {
         name: name,
-        stock_location_ids: stock_location_ids.blank? ? nil : stock_location_ids
+        stock_location_ids: (stock_location_ids.blank? ? nil : stock_location_ids),
         created_at: created_at,
         updated_at: updated_at,
         price: price,
