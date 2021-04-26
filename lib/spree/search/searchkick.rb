@@ -23,12 +23,13 @@ module Spree
 
       def where_query
         where_query = {
-          active: true,
+          stock_location_ids: { not: nil },
           currency: current_currency,
           price: { not: nil },
         }
         where_query[:taxon_ids] = taxon.id if taxon
         where_query[:producer] = producer if producer
+        where_query[:stock_location_ids] = stock_location_ids if stock_location_ids
         add_search_filters(where_query)
       end
 
@@ -65,6 +66,7 @@ module Spree
         super
         @properties[:ignore_search] = params[:ignore_search]
         @properties[:producer] = params[:producer]
+        @properties[:stock_location_ids] = params[:stock_location_ids]
       end
     end
   end

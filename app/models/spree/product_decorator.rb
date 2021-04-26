@@ -36,7 +36,7 @@ module Spree::ProductDecorator
 
       def base.search_where
         {
-          active: true,
+          stock_location_ids: { not: nil },
           price: { not: nil },
         }
       end
@@ -49,9 +49,10 @@ module Spree::ProductDecorator
     end
 
     def search_data
+      stock_location_ids = stock_items.where('count_on_hand > 0').pluck(:stock_location_id).uniq
       json = {
         name: name,
-        active: can_supply?,
+        stock_location_ids: stock_location_ids.blank? ? nil : stock_location_ids
         created_at: created_at,
         updated_at: updated_at,
         price: price,
