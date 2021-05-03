@@ -14,7 +14,9 @@ module Spree::ProductsControllerDecorator
 
   def autocomplete
     keywords = params[:keywords] ||= nil
-    json = Spree::Product.autocomplete(keywords)
+    stock_locations = params[:stock_locations] ||= nil
+    stock_locations = stock_locations&.split(',')&.map(&:to_i)
+    json = Spree::Product.autocomplete(keywords, stock_locations)
     render json: json
   end
 

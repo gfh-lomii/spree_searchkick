@@ -8,7 +8,7 @@ module Spree::ProductDecorator
       ['name^100', 'producer_name', 'taxon_names', 'meta_keywords']
     end
 
-    def base.autocomplete(keywords)
+    def base.autocomplete(keywords, stock_locations)
       if keywords && keywords != '%QUERY'
         Spree::Product.search(
           keywords,
@@ -16,7 +16,7 @@ module Spree::ProductDecorator
           match: :text_middle,
           load: false,
           misspellings: { below: 2, edit_distance: 2 },
-          where: search_where,
+          where: search_where(stock_locations),
           ).map(&:name).map(&:strip)
       else
         Spree::Product.search(
@@ -24,7 +24,7 @@ module Spree::ProductDecorator
           fields: search_fields,
           load: false,
           misspellings: { below: 2, edit_distance: 2 },
-          where: search_where,
+          where: search_where(stock_locations),
           ).map{|p| {
             n: p.name&.strip || '',
             p: p.producer_name&.strip || '',
@@ -34,9 +34,9 @@ module Spree::ProductDecorator
         end
       end
 
-      def base.search_where
+      def base.search_where(stock_locations)
         {
-          stock_location_ids: { not: nil },
+          stock_location_ids: stock_locations,
           price: { not: nil },
         }
       end
