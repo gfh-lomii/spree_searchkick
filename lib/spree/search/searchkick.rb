@@ -26,6 +26,7 @@ module Spree
           stock_location_ids: { not: nil },
           currency: current_currency,
           price: { not: nil },
+          available: true
         }
         where_query[:taxon_ids] = taxon.id if taxon
         where_query[:producer] = producer if producer
