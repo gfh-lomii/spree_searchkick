@@ -82,5 +82,9 @@ Spree.typeaheadSearch = function () {
 };
 
 document.addEventListener("turbolinks:load", function () {
-  if (typeof Spree.typeaheadSearch !== 'undefined') Spree.typeaheadSearch();
+  if (typeof Spree.typeaheadSearch !== 'undefined' && $("#search-button-kick")){
+    $(document).on("click", "#search-button-kick", function () {
+      Spree.typeaheadSearch();
+    });
+  }
 });
