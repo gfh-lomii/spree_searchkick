@@ -11,7 +11,8 @@ module Spree
         Spree::Product.search(
           keyword_query,
           fields: Spree::Product.search_fields,
-          match: :text_middle,
+          match: :word,
+          misspellings: { below: 2, edit_distance: 2 },
           where: where_query,
           aggs: aggregations,
           smart_aggs: true,
