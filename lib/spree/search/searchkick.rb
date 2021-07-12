@@ -29,7 +29,7 @@ module Spree
           price: { not: nil },
           available: true
         }
-        where_query[:taxon_ids] = taxon.id if taxon
+        where_query[:taxon_ids] = taxon if taxon
         where_query[:producer] = producer if producer
         where_query[:stock_location_ids] = stock_location_ids if stock_location_ids
         add_search_filters(where_query)
