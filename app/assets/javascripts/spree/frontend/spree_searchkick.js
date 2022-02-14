@@ -34,19 +34,19 @@ var configImgCdn = function (img_url, width, height, quality) {
 };
 
 Spree.typeaheadSearch = function () {
+  const stockLocationParam =  '?stock_locations=' + Spree.stockLocations();
   var products = new Bloodhound({
-
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: queryTokenizer,
     prefetch: {
-      url: Spree.pathFor('autocomplete/products.json'),
+      url: Spree.pathFor('autocomplete/products.json') + stockLocationParam,
       ttl: 14400000,
       transform: function (response) {
         return formatSearchResponse(response);
       }
     },
     remote: {
-      url: Spree.pathFor('autocomplete/products.json?keywords=%25QUERY'),
+      url: Spree.pathFor('autocomplete/products.json?keywords=%25QUERY') + '&stock_locations=' + stockLocationParam.replace('?', '&'),
       wildcard: '%QUERY',
       transform: function (response) {
         return formatSearchResponse(response);
@@ -82,5 +82,9 @@ Spree.typeaheadSearch = function () {
 };
 
 document.addEventListener("turbolinks:load", function () {
-  if (typeof Spree.typeaheadSearch !== 'undefined') Spree.typeaheadSearch();
+  if (typeof Spree.typeaheadSearch !== 'undefined' && $("#search-button-kick")){
+    $(document).on("click", "#search-button-kick", function () {
+      Spree.typeaheadSearch();
+    });
+  }
 });
