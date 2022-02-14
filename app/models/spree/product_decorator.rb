@@ -50,7 +50,8 @@ module Spree::ProductDecorator
     end
 
     def search_data
-      stock_location_ids = stock_items.where('count_on_hand > 0').pluck(:stock_location_id).uniq
+      stock_location_ids = stock_items.where('count_on_hand > 0 OR backorderable = TRUE')
+                                      .pluck(:stock_location_id).uniq
       json = {
         name: name,
         available: available?,
