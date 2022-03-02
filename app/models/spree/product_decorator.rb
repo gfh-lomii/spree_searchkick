@@ -64,7 +64,7 @@ module Spree::ProductDecorator
         producer_name: producer&.name,
         producer: producer&.id,
         taxon_ids: taxon_and_ancestors.map(&:id),
-        taxon_names: taxon_and_ancestors.map{|taxon| taxon.name if taxon.taxonomy_id == 4 && taxon.depth != 0 && !taxon.name.include?(" y ")}.compact,
+        taxon_names: taxon_and_ancestors.map{|taxon| taxon.name if taxon.depth != 0}.compact,
         meta_keywords: meta_keywords,
         image_url: (Rails.application.routes.url_helpers.rails_public_blob_url(default_image_for_product_or_variant(self)&.attachment) rescue '')
       }

@@ -72,7 +72,7 @@ Spree.typeaheadSearch = function () {
     hint: false,
     highlight: true
   },{
-    display: 'value',
+    displayKey: 'displayValue',
     limit: 20,
     name: 'products',
     source: products.ttAdapter(),
