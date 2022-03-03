@@ -1,3 +1,3 @@
 module SpreeSearchkick
-  VERSION = '3.4.16'.freeze
+  VERSION = '3.4.17'.freeze
 end

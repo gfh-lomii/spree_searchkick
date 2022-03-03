@@ -58,10 +58,35 @@ var formatSearchResponse = function (response) {
   });
 };
 
+var calculateDistance = function(value, word){
+  value_arr = value.split(' ');
+  has_exact_word = false
+  min = Levenshtein(value_arr[0], word);
+
+  for (var ix = 0; ix < value_arr.length; ix++) {
+    distance = Levenshtein(value_arr[ix], word);
+    if(value_arr[ix].toLowerCase() == word.toLowerCase()){
+      has_exact_word = true
+    }
+    if(distance < min){
+      min = distance
+    }
+  }
+
+  multiplier = 10000000/value_arr.length * -1
+
+  if(has_exact_word){
+    multiplier += -10000000
+  }
+
+  return min + multiplier
+}
+
 var sorterResults = function(a, b) {
   var value = $('#keywords').val();
-  distance = Levenshtein(a.value.split("#")[0], value) - Levenshtein(b.value.split("#")[0], value)
-  return distance;
+  distance_a = calculateDistance(a.value.split("#")[0], value)
+  distance_b = calculateDistance(b.value.split("#")[0], value)
+  return distance_a - distance_b;
 }
 
 var configImgCdn = function (img_url, width, height, quality) {
