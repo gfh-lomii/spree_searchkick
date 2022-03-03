@@ -1,6 +1,37 @@
 // Placeholder manifest file.
 // the installer will append this file to the app vendored assets here: vendor/assets/javascripts/spree/frontend/all.js'
 //= require_tree .
+function Levenshtein(a, b) {
+    var n = a.length;
+    var m = b.length;
+
+    // matriz de cambios mínimos
+    var d = [];
+
+    // si una de las dos está vacía, la distancia
+    // es insertar todas las otras
+    if(n == 0)
+        return m;
+    if(m == 0)
+        return n;
+
+    // inicializamos el peor caso (insertar todas)
+    for(var i = 0; i <= n; i++)
+        (d[i] = [])[0] = i;
+    for(var j = 0; j <= m; j++)
+        d[0][j] = j;
+
+    // cada elemento de la matriz será la transición con menor coste
+    for(var i = 1, I = 0; i <= n; i++, I++)
+      for(var j = 1, J = 0; j <= m; j++, J++)
+          if(b[J] == a[I])
+              d[i][j] = d[I][J];
+          else
+              d[i][j] = Math.min(d[I][j], d[i][J], d[I][J]) + 1;
+
+    // el menor número de operaciones
+    return d[n][m];
+}
 
 var normalize2 = function (input) {
   if(!input) return ''
@@ -27,6 +58,13 @@ var formatSearchResponse = function (response) {
   });
 };
 
+var sorterResults = function(a, b) {
+  var value = $('#keywords').val();
+
+  distance = Levenshtein(a.value, value) - Levenshtein(b.value, value)
+  return distance;
+}
+
 var configImgCdn = function (img_url, width, height, quality) {
   if ($('body').attr('data-rails-env') === 'development') return img_url;
   var splitUrl = img_url.split('/')
@@ -48,7 +86,8 @@ Spree.typeaheadSearch = function () {
       transform: function (response) {
         return formatSearchResponse(response);
       }
-    }
+    },
+    sorter: sorterResults
     // ,
     // remote: {
     //   url: Spree.pathFor('autocomplete/products.json?keywords=%25QUERY') + '&stock_locations=' + stockLocationParam.replace('?', '&'),
