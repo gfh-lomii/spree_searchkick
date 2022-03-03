@@ -62,16 +62,15 @@ var calculateDistance = function(value, word){
   value_arr = value.split(' ');
   has_exact_word = false
   no_word = 0
-  evaluated_word = value_arr[ix].replace(/s$/, '');
   modified_search_word = word.replace(/s$/, '');
-
-  min = Levenshtein(value_arr[0], modified_search_word);
+  min = Levenshtein(value_arr[0].replace(/s$/, ''), modified_search_word);
 
   for (var ix = 0; ix < value_arr.length; ix++) {
     if(value_arr[ix].length <= 2){
       no_word = no_word + 1;
       continue;
     }
+    evaluated_word = value_arr[ix].replace(/s$/, '');
 
     distance = Levenshtein(evaluated_word, modified_search_word);
     if(evaluated_word.toLowerCase() == modified_search_word.toLowerCase()){
