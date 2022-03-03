@@ -61,11 +61,20 @@ var formatSearchResponse = function (response) {
 var calculateDistance = function(value, word){
   value_arr = value.split(' ');
   has_exact_word = false
-  min = Levenshtein(value_arr[0], word);
+  no_word = 0
+  evaluated_word = value_arr[ix].replace(/s$/, '');
+  modified_search_word = word.replace(/s$/, '');
+
+  min = Levenshtein(value_arr[0], modified_search_word);
 
   for (var ix = 0; ix < value_arr.length; ix++) {
-    distance = Levenshtein(value_arr[ix], word);
-    if(value_arr[ix].toLowerCase() == word.toLowerCase()){
+    if(value_arr[ix].length <= 2){
+      no_word = no_word + 1;
+      continue;
+    }
+
+    distance = Levenshtein(evaluated_word, modified_search_word);
+    if(evaluated_word.toLowerCase() == modified_search_word.toLowerCase()){
       has_exact_word = true
     }
     if(distance < min){
@@ -73,7 +82,7 @@ var calculateDistance = function(value, word){
     }
   }
 
-  multiplier = 10000000/value_arr.length * -1
+  multiplier = 10000000/(value_arr.length - no_word) * -1
 
   if(has_exact_word){
     multiplier += -10000000
