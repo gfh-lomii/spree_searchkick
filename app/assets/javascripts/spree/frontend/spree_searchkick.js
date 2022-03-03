@@ -44,7 +44,7 @@ var queryTokenizer = function (q) {
 };
 
 var transformObj = function (obj) {
-  return obj['n'] + ' ' + obj['p'] + ' ' + obj['t'] + ' ' + obj['k'];
+  return obj['n'] + ' # ' + obj['p'] + ' # ' + obj['t'] + ' # ' + obj['k'];
 };
 
 var formatSearchResponse = function (response) {
@@ -60,8 +60,7 @@ var formatSearchResponse = function (response) {
 
 var sorterResults = function(a, b) {
   var value = $('#keywords').val();
-
-  distance = Levenshtein(a.value, value) - Levenshtein(b.value, value)
+  distance = Levenshtein(a.value.split("#")[0], value) - Levenshtein(b.value.split("#")[0], value)
   return distance;
 }
 
