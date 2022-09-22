@@ -8,7 +8,7 @@ module Spree::ProductDecorator
       ['name^100', 'producer_name', 'taxon_names', 'meta_keywords']
     end
 
-    def base.autocomplete(keywords, stock_locations)
+    def base.autocomplete(keywords, stock_locations, current_store_id)
       # if keywords && keywords != '%QUERY'
       #   Spree::Product.search(
       #     keywords,
@@ -16,7 +16,7 @@ module Spree::ProductDecorator
       #     match: :text_middle,
       #     load: false,
       #     misspellings: { below: 2, edit_distance: 2 },
-      #     where: search_where(stock_locations),
+      #     where: search_where(stock_locations, current_store_id),
       #     ).map(&:name).map(&:strip)
       # else
         Spree::Product.search(
@@ -24,7 +24,7 @@ module Spree::ProductDecorator
           fields: search_fields,
           load: false,
           misspellings: { below: 2, edit_distance: 2 },
-          where: search_where(stock_locations),
+          where: search_where(stock_locations, current_store_id),
           ).map{|p| {
             n: p.name&.strip || '',
             p: p.producer_name&.strip || '',
@@ -34,12 +34,18 @@ module Spree::ProductDecorator
         # end
       end
 
-      def base.search_where(stock_locations)
-        {
+      def base.search_where(stock_locations, current_store_id)
+        res = {
           stock_location_ids: stock_locations,
           price: { not: nil },
           available: true
         }
+         # filtramos solo para cada tienda, excepto lomi.cl (marketplace)
+         where_query[:store_ids] = current_store_id if current_store_id.present? && current_store_id != 1
+
+         # filtramos lomiexpress.cl para el marketplace
+         where_query[:store_ids] = { not: 2 } if current_store_id.present? && current_store_id != 2
+        res
       end
 
       def base.sorted
@@ -54,7 +60,7 @@ module Spree::ProductDecorator
                                       .pluck(:stock_location_id).uniq
       json = {
         name: name,
-        available: available?,
+        available: !deleted? && !discontinued?,
         stock_location_ids: (stock_location_ids.blank? ? nil : stock_location_ids),
         created_at: created_at,
         updated_at: updated_at,
@@ -66,6 +72,7 @@ module Spree::ProductDecorator
         taxon_ids: taxon_and_ancestors.map(&:id),
         taxon_names: taxon_and_ancestors.map{|taxon| taxon.name if taxon.depth != 0}.compact,
         meta_keywords: meta_keywords,
+        store_ids: (store_ids.blank? ? nil : store_ids),
         image_url: (Rails.application.routes.url_helpers.rails_public_blob_url(default_image_for_product_or_variant(self)&.attachment) rescue '')
       }
 

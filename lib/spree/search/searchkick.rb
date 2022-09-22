@@ -31,6 +31,13 @@ module Spree
         }
         where_query[:taxon_ids] = { all: taxon_ids } if taxon_ids.any?
         where_query[:producer] = producer if producer
+
+        # filtramos solo para cada tienda, excepto lomi.cl (marketplace)
+        where_query[:store_ids] = current_store_id if current_store_id.present? && current_store_id != 1
+
+        # filtramos lomiexpress.cl para el marketplace
+        where_query[:store_ids] = { not: 2 } if current_store_id.present? && current_store_id != 2
+
         where_query[:stock_location_ids] = stock_location_ids if stock_location_ids
         add_search_filters(where_query)
       end
@@ -69,6 +76,7 @@ module Spree
         @properties[:ignore_search] = params[:ignore_search]
         @properties[:producer] = params[:producer]
         @properties[:stock_location_ids] = params[:stock_location_ids]
+        @properties[:current_store_id] = params[:current_store_id]
         taxon_ids = [taxon]
         if params[:property].present?
           taxon_ids << Spree::Taxon.where(permalink: params[:property].split(',').compact.uniq).ids
