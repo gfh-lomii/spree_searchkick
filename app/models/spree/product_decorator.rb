@@ -40,11 +40,13 @@ module Spree::ProductDecorator
           price: { not: nil },
           available: true
         }
-         # filtramos solo para cada tienda, excepto lomi.cl (marketplace)
-         res[:store_ids] = current_store_id if current_store_id.present? && current_store_id != 1
 
-         # filtramos lomiexpress.cl para el marketplace
-         res[:store_ids] = { not: 2 } if current_store_id.present? && current_store_id != 2
+          # filtramos solo para cada tienda, excepto lomi.cl (marketplace)
+          res[:store_ids] = [current_store_id] if current_store_id.present? && current_store_id != 1
+
+          # filtramos lomiexpress.cl para el marketplace
+          res[:store_ids] = { not: [2] } if current_store_id.present? && current_store_id != 2
+
         res
       end
 
