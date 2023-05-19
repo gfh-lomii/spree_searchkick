@@ -19,12 +19,14 @@ module Spree::ProductDecorator
       #     where: search_where(stock_locations, current_store_id),
       #     ).map(&:name).map(&:strip)
       # else
+      puts "keywords: #{keywords}"
         Spree::Product.search(
-          "*",
+          keywords!= '%QUERY' ? keywords : '*',
           fields: search_fields,
           load: false,
           misspellings: { below: 2, edit_distance: 2 },
           where: search_where(stock_locations, current_store_id),
+          limit: 100,
           ).map{|p| {
             n: p.name&.strip || '',
             p: p.producer_name&.strip || '',
@@ -98,3 +100,5 @@ module Spree::ProductDecorator
   end
 
   Spree::Product.prepend(Spree::ProductDecorator)
+
+  
