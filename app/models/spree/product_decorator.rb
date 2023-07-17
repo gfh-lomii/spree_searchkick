@@ -23,7 +23,7 @@ module Spree::ProductDecorator
           "*",
           fields: search_fields,
           load: false,
-          misspellings: { below: 2, edit_distance: 1 },
+          misspellings: { below: 1, edit_distance: 1 },
           where: search_where(stock_locations, current_store_id),
           ).map{|p| {
             n: p.name&.strip || '',
