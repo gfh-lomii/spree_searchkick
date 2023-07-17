@@ -12,7 +12,7 @@ module Spree
           keyword_query,
           fields: Spree::Product.search_fields,
           match: :word,
-          misspellings: { below: 2, edit_distance: 2 },
+          misspellings: { below: 2, edit_distance: 1 },
           where: where_query,
           aggs: aggregations,
           smart_aggs: true,
