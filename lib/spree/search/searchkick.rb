@@ -52,7 +52,7 @@ module Spree
 
       def sorted
         order_params = {}
-        order_params[:name] = :asc unless @properties[:ignore_search]
+        order_params[sort] = :asc unless (sort.nil? || sort == '' || ignore_search)
         order_params
       end
 
@@ -81,6 +81,7 @@ module Spree
         @properties[:producer] = params[:producer]
         @properties[:stock_location_ids] = params[:stock_location_ids]
         @properties[:current_store_id] = params[:current_store_id]
+        @properties[:sort] = params[:sort]
         taxon_ids = [taxon]
         if params[:property].present?
           taxon_ids << Spree::Taxon.where(permalink: params[:property].split(',').compact.uniq).ids
