@@ -52,7 +52,7 @@ module Spree
 
       def sorted
         order_params = {}
-        order_params[sort] = :asc unless (sort.nil? || sort == '' || ignore_search)
+        ignore_search || sort.nil? || sort == '' ? order_params['conversions'] = :desc : order_params[sort] = :asc
         order_params
       end
 
