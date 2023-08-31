@@ -71,7 +71,7 @@ module Spree::ProductDecorator
         updated_at: updated_at,
         price: price,
         currency: currency,
-        conversions: ((6/featured_position) * 10 ** 30) + orders.complete.count,
+        conversions: featured_position ? ((6/featured_position) * (10 ** 30)) : orders.complete.count,
         producer_name: producer&.name,
         producer: producer&.id,
         taxon_ids: taxon_and_ancestors.map(&:id),
