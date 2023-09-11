@@ -24,7 +24,7 @@ module Spree::ProductDecorator
           keywords!= '%QUERY' ? keywords : '*',
           fields: search_fields,
           load: false,
-          misspellings: { below: 2, edit_distance: 2 },
+          misspellings: { below: 1, edit_distance: 1 },
           where: search_where(stock_locations, current_store_id),
           limit: 100,
           ).map{|p| {
