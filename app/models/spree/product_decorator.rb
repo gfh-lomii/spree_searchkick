@@ -19,12 +19,14 @@ module Spree::ProductDecorator
       #     where: search_where(stock_locations, current_store_id),
       #     ).map(&:name).map(&:strip)
       # else
+
         Spree::Product.search(
-          "*",
+          keywords!= '%QUERY' ? keywords : '*',
           fields: search_fields,
           load: false,
           misspellings: { below: 1, edit_distance: 1 },
           where: search_where(stock_locations, current_store_id),
+          limit: 100,
           ).map{|p| {
             n: p.name&.strip || '',
             p: p.producer_name&.strip || '',
@@ -71,7 +73,7 @@ module Spree::ProductDecorator
         updated_at: updated_at,
         price: price,
         currency: currency,
-        conversions: orders.complete.count,
+        conversions: featured_position ? ((6/featured_position) * (10 ** 30)) : orders.complete.count,
         producer_name: producer&.name,
         producer: producer&.id,
         taxon_ids: taxon_and_ancestors.map(&:id),

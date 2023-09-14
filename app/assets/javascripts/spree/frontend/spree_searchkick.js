@@ -112,22 +112,15 @@ Spree.typeaheadSearch = function () {
       return Bloodhound.tokenizers.whitespace(d.value);
     },
     queryTokenizer: queryTokenizer,
-    prefetch: {
-      url: Spree.pathFor('autocomplete/products.json') + stockLocationParam,
-      ttl: 14400000,
-      transform: function (response) {
-        return formatSearchResponse(response);
-      }
-    },
-    sorter: sorterResults
-    // ,
-    // remote: {
-    //   url: Spree.pathFor('autocomplete/products.json?keywords=%25QUERY') + '&stock_locations=' + stockLocationParam.replace('?', '&'),
-    //   wildcard: '%QUERY',
-    //   transform: function (response) {
-    //     return formatSearchResponse(response);
-    //   }
-    // }
+    sufficient: 20,
+    sorter: sorterResults,
+    remote: {
+       url: Spree.pathFor('autocomplete/products.json') + '?keywords=%QUERY' + stockLocationParam.replace('?', '&'),
+       wildcard: '%QUERY',
+       transform: function (response) {
+         return formatSearchResponse(response);
+       }
+     }
   });
 
   products.initialize().done(function () {
@@ -141,7 +134,7 @@ Spree.typeaheadSearch = function () {
   $('#keywords').typeahead({
     minLength: 1,
     hint: false,
-    highlight: true
+    highlight: true,
   },{
     displayKey: 'displayValue',
     limit: 20,
