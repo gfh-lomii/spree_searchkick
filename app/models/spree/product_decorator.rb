@@ -65,11 +65,6 @@ module Spree::ProductDecorator
     def search_data
       stock_location_ids = stock_items.where('count_on_hand > 0 OR backorderable = TRUE')
                                       .pluck(:stock_location_id).uniq
-      conversions = orders.complete.count
-      if featured_position.present? && featured_position.positive?
-        conversions = ((6/featured_position) * (10 ** 30))
-      end
-
       json = {
         name: name,
         available: !deleted? && !discontinued?,
@@ -78,7 +73,7 @@ module Spree::ProductDecorator
         updated_at: updated_at,
         price: price,
         currency: currency,
-        conversions: conversions,
+        conversions: orders.complete.count,
         producer_name: producer&.name,
         producer: producer&.id,
         taxon_ids: taxon_and_ancestors.map(&:id),
